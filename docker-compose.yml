@@ -1,0 +1,48 @@
+services:
+  api:
+    container_name: gr-api
+    image: gr-api
+    build:
+      dockerfile: Dockerfile
+      context: ./api
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    command: npm run start:dev
+    ports:
+      - 3333:3333
+    depends_on:
+      - postgres
+
+  dashboard:
+    container_name: gr-dashboard
+    image: gr-dashboard
+    build:
+      context: ./dashboard
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/usr/src/app
+    env_file:
+      - .env
+    command: npm run start
+    ports:
+      - 3000:3000
+
+  postgres:
+    container_name: gr-postgres
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - gr-postgres:/var/lib/postgresql/data
+
+volumes:
+  gr-postgres:
