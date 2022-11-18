@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { DatabaseConfig } from './app.interface';
 import { AppService } from './app.service';
 import config from './config';
+import { ScanResult } from './scan-result/entities/scan-result.entity';
+import { ScanResultModule } from './scan-result/scan-result.module';
 
 @Module({
   imports: [
@@ -20,12 +22,13 @@ import config from './config';
           username: dbConfig.username,
           password: dbConfig.password,
           database: dbConfig.name,
-          entities: ['src/**/*.entity.ts'],
+          entities: [ScanResult],
           synchronize: true,
         };
       },
       inject: [ConfigService],
     }),
+    ScanResultModule,
   ],
   controllers: [AppController],
   providers: [AppService],
