@@ -1,6 +1,5 @@
-import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { CreateScanResultDto } from './dto/scan-result.dto';
-import { Status } from './scan-result.interface';
 import { ScanResultService } from './scan-result.service';
 
 @Controller('scan-results')
@@ -14,16 +13,18 @@ export class ScanResultController {
 
   @Post()
   create(@Body() createScanResultDto: CreateScanResultDto) {
-    if (createScanResultDto.status === Status.Queued && !createScanResultDto.queued_at) {
-      throw new BadRequestException('queued_at is required when status is queued');
-    } else if (createScanResultDto.status === Status.InProgress && !createScanResultDto.scanning_at) {
-      throw new BadRequestException('scanning_at is required when status is in_progress');
-    } else if (
-      [Status.Success, Status.Failure].includes(createScanResultDto.status) &&
-      !createScanResultDto.finished_at
-    ) {
-      throw new BadRequestException('finished_at is required when status is success or failure');
-    }
+    this.scanResultService.validateStatusAndTimestamp(createScanResultDto);
     return this.scanResultService.create(createScanResultDto);
+  }
+
+  @Put(':id')
+  update(@Param('id') id: number, @Body() updateScanResultDto: CreateScanResultDto) {
+    this.scanResultService.validateStatusAndTimestamp(updateScanResultDto);
+    return this.scanResultService.update(id, updateScanResultDto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: number) {
+    return this.scanResultService.delete(id);
   }
 }
