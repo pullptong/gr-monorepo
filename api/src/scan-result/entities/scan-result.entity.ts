@@ -15,12 +15,12 @@ export class ScanResult {
   @Column({ type: 'jsonb', default: [] })
   findings: Finding[];
 
-  @Column({ name: 'queued_at', type: 'timestamp' })
+  @Column({ name: 'queued_at', type: 'timestamp', nullable: true })
   queuedAt: Date;
 
-  @Column({ name: 'scanning_at', type: 'timestamp' })
+  @Column({ name: 'scanning_at', type: 'timestamp', nullable: true })
   scanningAt: Date;
 
-  @Column({ name: 'finished_at', type: 'timestamp' })
+  @Column({ name: 'finished_at', type: 'timestamp', nullable: true })
   finishedAt: Date;
 }
