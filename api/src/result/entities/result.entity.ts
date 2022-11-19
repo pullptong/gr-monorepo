@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { Finding, Status } from '../scan-result.interface';
+import { Finding, Status } from '../result.interface';
 
-@Entity('scan_result')
-export class ScanResult {
+@Entity('result')
+export class Result {
   @PrimaryGeneratedColumn()
   id: number;
 

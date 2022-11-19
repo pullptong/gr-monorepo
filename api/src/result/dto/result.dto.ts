@@ -9,7 +9,7 @@ import {
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Status } from '../scan-result.interface';
+import { Status } from '../result.interface';
 
 class BeginDto {
   @IsNumber()
@@ -58,7 +58,7 @@ class FindingDto {
   metadata: MetadataDto;
 }
 
-export class CreateScanResultDto {
+export class CreateResultDto {
   @IsEnum(Status)
   status: Status;
 
