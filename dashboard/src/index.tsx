@@ -6,7 +6,7 @@ import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import FormPage from './routes/Form';
-import Results from './routes/Results';
+import Results, { loader as resultsLoader } from './routes/Results';
 import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 const router = createBrowserRouter([
@@ -20,6 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/results',
+        loader: resultsLoader,
         element: <Results />,
       },
     ],

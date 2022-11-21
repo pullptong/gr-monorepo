@@ -34,6 +34,16 @@ export enum Severity {
 }
 
 export interface Result {
+  id: number;
+  status: Status;
+  repositoryName: string;
+  findings: Finding[];
+  queuedAt?: string;
+  scanningAt?: string;
+  finishedAt?: string;
+}
+
+export interface CreateResultPayLoad {
   status: Status;
   repository_name: string;
   findings: Finding[];

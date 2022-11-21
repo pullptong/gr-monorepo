@@ -1,7 +1,7 @@
 import { Button, Form, Header, Icon, Label, Modal } from 'semantic-ui-react';
 import Datepicker from 'react-semantic-ui-datepickers';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Finding, Result } from '../interfaces/result.interface';
+import { CreateResultPayLoad, Finding, Result } from '../interfaces/result.interface';
 import { Status } from '../interfaces/result.interface';
 import { createResult } from '../services/result.service';
 
@@ -31,9 +31,9 @@ const FormPage: React.FC = () => {
     }
   }, [file]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     if (status && repositoryName && date && findings.length > 0) {
-      const result: Result = {
+      const result: CreateResultPayLoad = {
         status,
         repository_name: repositoryName,
         findings,
@@ -46,7 +46,11 @@ const FormPage: React.FC = () => {
       } else {
         result.finished_at = isoDate;
       }
-      createResult(result);
+      try {
+        await createResult(result);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }, [status, repositoryName, date, findings]);
 
