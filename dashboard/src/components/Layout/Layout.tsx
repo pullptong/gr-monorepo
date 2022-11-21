@@ -1,6 +1,6 @@
 import { PropsWithChildren, useCallback, useState } from 'react';
 import { Container, Menu, Segment, Visibility } from 'semantic-ui-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, Outlet } from 'react-router-dom';
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
@@ -11,7 +11,7 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <Visibility once={false} onBottomPassed={showFixedMenu} onBottomPassedReverse={hideFixedMenu}>
-      <Segment inverted textAlign="center" style={{ minHeight: 700, padding: '1em 0em' }} vertical>
+      <Segment inverted textAlign="center" style={{ padding: '1em 0em' }} vertical>
         <Menu fixed={fixed ? 'top' : undefined} inverted={!fixed} pointing={!fixed} secondary={!fixed} size="large">
           <Container>
             <Menu.Item active={location.pathname.startsWith('/form')}>
@@ -22,8 +22,10 @@ const Layout: React.FC<PropsWithChildren> = ({ children }) => {
             </Menu.Item>
           </Container>
         </Menu>
-        {children}
       </Segment>
+      <Container inverted style={{ padding: '3em 0em' }}>
+        <Outlet />
+      </Container>
     </Visibility>
   );
 };

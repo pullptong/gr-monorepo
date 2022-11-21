@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import './utils/axios';
@@ -6,18 +5,18 @@ import 'semantic-ui-css/semantic.min.css';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
-import Form from './routes/Form';
+import FormPage from './routes/Form';
 import Results from './routes/Results';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-
     children: [
       {
         path: '/form',
-        element: <Form />,
+        element: <FormPage />,
       },
       {
         path: '/results',
