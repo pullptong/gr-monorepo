@@ -16,6 +16,10 @@ export class ResultService {
     return this.resultRepository.find({ order: { id: 'DESC' } });
   }
 
+  getOne(id: number) {
+    return this.resultRepository.findOneBy({ id });
+  }
+
   create(createResultDto: CreateResultDto) {
     const result = this.resultRepository.create({
       status: createResultDto.status,

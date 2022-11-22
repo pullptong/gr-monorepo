@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
 import { DatabaseConfig } from './app.interface';
-import { AppService } from './app.service';
 import config from './config';
 import { Result } from './result/entities/result.entity';
 import { ResultModule } from './result/result.module';
@@ -30,7 +28,5 @@ import { ResultModule } from './result/result.module';
     }),
     ResultModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

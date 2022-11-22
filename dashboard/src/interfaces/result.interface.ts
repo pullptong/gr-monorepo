@@ -23,7 +23,7 @@ interface Location {
 
 interface Metadata {
   description: string;
-  severity: string;
+  severity: Severity;
 }
 
 export enum Severity {

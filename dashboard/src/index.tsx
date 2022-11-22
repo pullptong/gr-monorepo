@@ -3,11 +3,12 @@ import reportWebVitals from './reportWebVitals';
 import './utils/axios';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
+import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import FormPage from './routes/Form';
 import Results, { loader as resultsLoader } from './routes/Results';
-import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+import Result, { loader as resultLoader } from './routes/Result';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,11 @@ const router = createBrowserRouter([
         path: '/results',
         loader: resultsLoader,
         element: <Results />,
+      },
+      {
+        path: '/results/:id',
+        loader: resultLoader,
+        element: <Result />,
       },
     ],
   },

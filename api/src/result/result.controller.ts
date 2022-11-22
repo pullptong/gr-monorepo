@@ -11,6 +11,11 @@ export class ResultController {
     return this.resultService.getAll();
   }
 
+  @Get(':id')
+  getOne(@Param('id') id: string) {
+    return this.resultService.getOne(parseInt(id));
+  }
+
   @Post()
   create(@Body() createResultDto: CreateResultDto) {
     this.resultService.validateStatusAndTimestamp(createResultDto);
