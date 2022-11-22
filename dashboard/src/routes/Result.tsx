@@ -2,7 +2,7 @@ import { deleteResult, getResult } from '../services/result.service';
 import { useLoaderData, LoaderFunctionArgs, useNavigate } from 'react-router-dom';
 import { Result, Severity, Status } from '../interfaces/result.interface';
 import { Button, Card, Header, Icon, Label, Modal } from 'semantic-ui-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getCardStatusColor, getTextSeverityColor, getTextStatusColor } from '../utils/colors';
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -54,6 +54,16 @@ const Results: React.FC = () => {
       console.error(e);
     }
   };
+
+  useEffect(() => {
+    if (!result) {
+      navigate('/results');
+    }
+  }, [result, navigate]);
+
+  if (!result) {
+    return <div></div>;
+  }
 
   return (
     <div>
