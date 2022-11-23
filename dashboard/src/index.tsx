@@ -3,7 +3,7 @@ import reportWebVitals from './reportWebVitals';
 import './utils/axios';
 import 'semantic-ui-css/semantic.min.css';
 import './index.css';
-import 'react-semantic-ui-datepickers/dist/react-semantic-ui-datepickers.css';
+import 'react-datepicker/dist/react-datepicker.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Layout from './components/Layout/Layout';
 import FormPage from './routes/Form';

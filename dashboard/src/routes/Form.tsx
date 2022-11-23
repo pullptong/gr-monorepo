@@ -1,9 +1,9 @@
 import { Button, Form, Header, Icon, Label, Modal } from 'semantic-ui-react';
-import Datepicker from 'react-semantic-ui-datepickers';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CreateResultPayLoad, Finding, Result } from '../interfaces/result.interface';
+import { CreateResultPayLoad, Finding } from '../interfaces/result.interface';
 import { Status } from '../interfaces/result.interface';
 import { createResult } from '../services/result.service';
+import DatePicker from 'react-datepicker';
 
 const FormPage: React.FC = () => {
   const [status, setStatus] = useState<Status>();
@@ -15,31 +15,42 @@ const FormPage: React.FC = () => {
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
 
-  useEffect(() => {
-    if (file) {
-      const fileReader = new FileReader();
-      fileReader.readAsText(file, 'UTF-8');
-      fileReader.onload = (e) => {
-        if (e.target) {
-          try {
-            const findings = JSON.parse(e.target.result as string).findings;
-            if (findings) {
-              setFindings(JSON.parse(e.target.result as string).findings);
-            } else {
-              setFile(undefined);
-              setOpenError(true);
+  const readJson = useCallback(() => {
+    return new Promise<Finding[] | undefined>((resolve) => {
+      if (file) {
+        const fileReader = new FileReader();
+        fileReader.readAsText(file, 'UTF-8');
+        fileReader.onload = (e) => {
+          if (e.target) {
+            try {
+              const findings = JSON.parse(e.target.result as string).findings;
+              if (findings) {
+                resolve(findings);
+              } else {
+                resolve(undefined);
+              }
+            } catch (e) {
+              resolve(undefined);
             }
-          } catch (e) {
-            setFile(undefined);
-            setOpenError(true);
           }
-        }
-      };
-    }
+        };
+      }
+    });
   }, [file]);
 
+  useEffect(() => {
+    readJson().then((findings) => {
+      if (findings) {
+        setFindings(findings);
+      } else {
+        setFile(undefined);
+        setOpenError(true);
+      }
+    });
+  }, [readJson]);
+
   const handleSubmit = useCallback(async () => {
-    if (status && repositoryName && date && findings.length > 0) {
+    if (status && repositoryName && date && findings && findings.length > 0) {
       const result: CreateResultPayLoad = {
         status,
         repository_name: repositoryName,
@@ -64,7 +75,14 @@ const FormPage: React.FC = () => {
 
   return (
     <div>
-      <Modal basic onClose={() => setOpenError(false)} onOpen={() => setOpenError(true)} open={openError} size="small">
+      <Modal
+        data-testid="error-modal"
+        basic
+        onClose={() => setOpenError(false)}
+        onOpen={() => setOpenError(true)}
+        open={openError}
+        size="small"
+      >
         <Header icon>
           <Icon name="archive" />
           Invalid JSON file format
@@ -94,6 +112,7 @@ const FormPage: React.FC = () => {
         onOpen={() => setOpenSuccess(true)}
         open={openSuccess}
         size="small"
+        data-testid="success-modal"
       >
         <Header icon>
           <Icon name="check" />
@@ -108,21 +127,34 @@ const FormPage: React.FC = () => {
       <Form inverted onSubmit={() => handleSubmit()} className="flex flex-col gap-3">
         <h1 className="text-3xl font-bold">Result Form</h1>
         <Form.Field>
-          <label>Status</label>
-          <Button.Group className="w-full">
-            <Button color={status === Status.Queued ? 'grey' : undefined} onClick={() => setStatus(Status.Queued)}>
+          <label htmlFor="status-btn-group">Status</label>
+          <Button.Group id="status-btn-group" className="w-full">
+            <Button
+              data-testid="queued-btn"
+              color={status === Status.Queued ? 'grey' : undefined}
+              onClick={() => setStatus(Status.Queued)}
+            >
               Queued
             </Button>
             <Button
+              data-testid="in-progress-btn"
               color={status === Status.InProgress ? 'blue' : undefined}
               onClick={() => setStatus(Status.InProgress)}
             >
               In Progress
             </Button>
-            <Button color={status === Status.Success ? 'green' : undefined} onClick={() => setStatus(Status.Success)}>
+            <Button
+              data-testid="success-btn"
+              color={status === Status.Success ? 'green' : undefined}
+              onClick={() => setStatus(Status.Success)}
+            >
               Success
             </Button>
-            <Button color={status === Status.Failure ? 'red' : undefined} onClick={() => setStatus(Status.Failure)}>
+            <Button
+              data-testid="failure-btn"
+              color={status === Status.Failure ? 'red' : undefined}
+              onClick={() => setStatus(Status.Failure)}
+            >
               Failure
             </Button>
           </Button.Group>
@@ -130,18 +162,38 @@ const FormPage: React.FC = () => {
         {status !== undefined && (
           <div className="grid grid-cols-3 gap-3">
             <Form.Field>
-              <label>Repository Name</label>
-              <input placeholder="Repository Name" onChange={(e) => setRepositoryName(e.target.value)} />
+              <label htmlFor="repository-name-input">Repository Name</label>
+              <input
+                id="repository-name-input"
+                data-testid="repository-name-input"
+                placeholder="Repository Name"
+                onChange={(e) => setRepositoryName(e.target.value)}
+              />
             </Form.Field>
             <Form.Field className="flex flex-col">
-              {status === Status.Queued && <label>Queued At</label>}
-              {status === Status.InProgress && <label>Scanning At</label>}
-              {[Status.Success, Status.Failure].includes(status) && <label>Finished At</label>}
-              <Datepicker inverted onChange={(_, data) => setDate(data.value as Date)} />
+              {status === Status.Queued && <label htmlFor="datepicker">Queued At</label>}
+              {status === Status.InProgress && <label htmlFor="datepicker">Scanning At</label>}
+              {[Status.Success, Status.Failure].includes(status) && <label htmlFor="datepicker">Finished At</label>}
+              <DatePicker
+                placeholderText="Select date and time"
+                id="datepicker"
+                data-testid="datepicker"
+                selected={date}
+                onChange={(date) => date && setDate(date)}
+                showTimeSelect
+                dateFormat="pP"
+              />
             </Form.Field>
             <Form.Field>
-              <label>Findings</label>
-              <Button className="w-full" as="div" labelPosition="right" onClick={() => fileRef.current?.click()}>
+              <label htmlFor="select-file-btn">Findings</label>
+              <Button
+                id="select-file-btn"
+                data-testid="select-file-btn"
+                className="w-full"
+                as="div"
+                labelPosition="right"
+                onClick={() => fileRef.current?.click()}
+              >
                 <Button icon>
                   <Icon name="file" />
                 </Button>
@@ -150,6 +202,7 @@ const FormPage: React.FC = () => {
                 </Label>
               </Button>
               <input
+                data-testid="file-input"
                 style={{ display: 'none' }}
                 ref={fileRef}
                 type="file"
@@ -158,8 +211,14 @@ const FormPage: React.FC = () => {
                 onChange={(e) => setFile(e.target.files?.[0])}
               />
             </Form.Field>
-            <div className="col-start-3 flex justify-end">
+            <div className="col-span-2">
+              {findings && findings.length > 0 && (
+                <pre data-testid="json-preview">{JSON.stringify(findings, null, 2)}</pre>
+              )}
+            </div>
+            <div className="flex justify-end items-start">
               <Button
+                data-testid="submit-btn"
                 type="submit"
                 color="green"
                 disabled={!status || !repositoryName || !date || !findings || findings.length === 0}
