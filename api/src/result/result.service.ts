@@ -52,11 +52,11 @@ export class ResultService {
 
   validateStatusAndTimestamp(createResultDto: CreateResultDto) {
     if (createResultDto.status === Status.Queued && !createResultDto.queued_at) {
-      throw new BadRequestException('queued_at is required when status is queued');
+      throw new BadRequestException('queued_at is required when status is Queued');
     } else if (createResultDto.status === Status.InProgress && !createResultDto.scanning_at) {
-      throw new BadRequestException('scanning_at is required when status is in_progress');
+      throw new BadRequestException('scanning_at is required when status is In Progress');
     } else if ([Status.Success, Status.Failure].includes(createResultDto.status) && !createResultDto.finished_at) {
-      throw new BadRequestException('finished_at is required when status is success or failure');
+      throw new BadRequestException('finished_at is required when status is Success or Failure');
     }
   }
 }

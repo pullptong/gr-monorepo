@@ -23,13 +23,13 @@ export class ResultController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() updateResultDto: CreateResultDto) {
+  update(@Param('id') id: string, @Body() updateResultDto: CreateResultDto) {
     this.resultService.validateStatusAndTimestamp(updateResultDto);
-    return this.resultService.update(id, updateResultDto);
+    return this.resultService.update(parseInt(id), updateResultDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: number) {
-    return this.resultService.delete(id);
+  delete(@Param('id') id: string) {
+    return this.resultService.delete(parseInt(id));
   }
 }
