@@ -9,7 +9,7 @@ The dashboard is using Reactjs as a framework with Semantic UI and Tailwindcss f
 - Form is made for submitting scan result
 - Results is made for displaying scan results and the detail of each one.
 
-## Pre-requisute
+## Prerequisite
 
 - docker
 - docker-compose
@@ -34,3 +34,27 @@ docker-compose up
 ```
 
 - access dashboard via http://localhost:3000
+
+## Unit Testing
+
+Both api and dashboard has unit testing
+
+### Prerequisite
+
+- Nodejs (v16+)
+
+API
+
+```
+    cd api
+    npm install
+    npm run test
+```
+
+Dashboard
+
+```
+    cd dashboard
+    npm install
+    npm run test
+```
